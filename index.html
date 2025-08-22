@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connectify - Dating App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6e48aa, #9d50bb);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .app-container {
+            width: 100%;
+            max-width: 400px;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        /* Auth Screens */
+        .auth-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            transition: transform 0.5s;
+        }
+        
+        .auth-header {
+            text-align: center;
+            padding: 30px 0;
+        }
+        
+        .auth-logo {
+            font-size: 32px;
+            font-weight: bold;
+            color: #6e48aa;
+            margin-bottom: 10px;
+        }
+        
+        .auth-form {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .form-group label {
+            font-weight: 500;
+            color: #555;
+        }
+        
+        .form-group input {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            outline: none;
+            font-size: 16px;
+        }
+        
+        .auth-btn {
+            background: #6e48aa;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        .auth-switch {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+        }
+        
+        .auth-switch a {
+            color: #6e48aa;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        /* Main App */
+        .header {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #6e48aa;
+            color: white;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .icon-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        .profile-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            position: relative;
+            transition: transform 0.3s, opacity 0.3s;
+        }
+        
+        .profile-img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+        }
+        
+        .profile-info {
+            padding: 15px;
+        }
+        
+        .profile-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .profile-age {
+            color: #6e48aa;
+            font-weight: 600;
+        }
+        
+        .profile-bio {
+            margin-top: 10px;
+            color: #666;
+            line-height: 1.4;
+        }
+        
+        .profile-distance {
+            margin-top: 10px;
+            color: #888;
+            font-size: 14px;
+        }
+        
+        .actions {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            gap: 30px;
+            background: white;
+            border-top: 1px solid #eee;
+        }
+        
+        .action-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .action-btn:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dislike {
+            background: white;
+            color: #fd5068;
+            border: 2px solid #fd5068;
+        }
+        
+        .like {
+            background: #6e48aa;
+            color: white;
+        }
+        
+        .super-like {
+            background: #1e88e5;
+            color: white;
+        }
+        
+        .nav {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px;
+            background: white;
+            border-top: 1px solid #eee;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #888;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .nav-item.active {
+            color: #6e48aa;
+        }
+        
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .match-list {
+            list-style: none;
+        }
+        
+        .match-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+        
+        .match-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 15px;
+        }
+        
+        .match-name {
+            font-weight: 600;
+            font-size: 18px;
+        }
+        
+        .match-last-msg {
+            color: #888;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+        
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .chat-header {
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .message {
+            max-width: 70%;
+            padding: 10px 15px;
+            border-radius: 20px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        
+        .message.received {
+            align-self: flex-start;
+            background: #f1f3f5;
+            border-top-left-radius: 5px;
+        }
+        
+        .message.sent {
+            align-self: flex-end;
+            background: #6e48aa;
+            color: white;
+            border-top-right-radius: 5px;
+        }
+        
+        .chat-input {
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            border-top: 1px solid #eee;
+        }
+        
+        .chat-input input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 30px;
+            border: 1px solid #ddd;
+            outline: none;
+        }
+        
+        .send-btn {
+            background: #6e48aa;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        
+        .settings-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .settings-name {
+            font-size: 16px;
+        }
+        
+        .settings-value {
+            color: #888;
+            font-size: 14px;
+        }
+        
+        .toggle {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: #6e48aa;
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        .hidden {
+            transform: translateY(-100%);
+        }
+        
+        .backend-console {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 300px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #00ff4c;
+            padding: 10px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 150px;
+            overflow-y: auto;
+            display: none;
+        }
+        
+        .console-toggle {
+            position: absolute;
+            bottom: 170px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <button class="console-toggle" onclick="toggleConsole()">Show Backend</button>
+    <div class="backend-console" id="console">
+        <div>Backend System Initialized...</div>
+        <div>Database connected successfully</div>
+        <div>User service started</div>
+        <div>Matching engine ready</div>
+    </div>
+
+    <div class="app-container">
+        <!-- Authentication Screen -->
+        <div class="auth-container" id="auth-container">
+            <div class="auth-header">
+                <div class="auth-logo">Connectify</div>
+                <p>Find your perfect match</p>
+            </div>
+            
+            <div class="auth-form" id="login-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="Enter your email">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter your password">
+                </div>
+                
+                <button class="auth-btn" onclick="login()">Log In</button>
+                
+                <div class="auth-switch">
+                    Don't have an account? <a href="#" onclick="showSignup()">Sign Up</a>
+                </div>
+            </div>
+            
+            <div class="auth-form hidden" id="signup-form">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" placeholder="Enter your name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="signup-email">Email</label>
+                    <input type="email" id="signup-email" placeholder="Enter your email">
+                </div>
+                
+                <div class="form-group">
+                    <label for="signup-password">Password</label>
+                    <input type="password" id="signup-password" placeholder="Create a password">
+                </div>
+                
+                <div class="form-group">
+                    <label for="age">Age</label>
+                    <input type="number" id="age" placeholder="Your age">
+                </div>
+                
+                <button class="auth-btn" onclick="signup()">Create Account</button>
+                
+                <div class="auth-switch">
+                    Already have an account? <a href="#" onclick="showLogin()">Log In</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main App -->
+        <div class="header">
+            <button class="icon-btn"><i class="fas fa-bars"></i></button>
+            <div class="logo">Connectify</div>
+            <button class="icon-btn"><i class="fas fa-comment"></i></button>
+        </div>
+        
+        <div class="content">
+            <div class="tab-content active" id="discover">
+                <div class="profile-card" id="current-profile">
+                    <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" class="profile-img" alt="Profile">
+                    <div class="profile-info">
+                        <div class="profile-name">Emma, <span class="profile-age">26</span></div>
+                        <div class="profile-bio">Art lover and travel enthusiast. Looking for someone to explore the world with me.</div>
+                        <div class="profile-distance"><i class="fas fa-map-marker-alt"></i> 5 miles away</div>
+                    </div>
+                </div>
+                
+                <div class="profile-card" id="next-profile">
+                    <img src="https://images.unsplash.com/photo-1567532939604-b6b5b0db1604?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" class="profile-img" alt="Profile">
+                    <div class="profile-info">
+                        <div class="profile-name">James, <span class="profile-age">29</span></div>
+                        <div class="profile-bio">Software engineer who loves hiking and good coffee. Let's connect!</div>
+                        <div class="profile-distance"><i class="fas fa-map-marker-alt"></i> 3 miles away</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="matches">
+                <div class="tab-title">Matches</div>
+                <ul class="match-list">
+                    <li class="match-item">
+                        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" class="match-img" alt="Match">
+                        <div class="match-info">
+                            <div class="match-name">Sophia</div>
+                            <div class="match-last-msg">Hey there! How are you?</div>
+                        </div>
+                    </li>
+                    <li class="match-item">
+                        <img src="https://images.unsplash.com/photo-1593104547480-789659527d1c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" class="match-img" alt="Match">
+                        <div class="match-info">
+                            <div class="match-name">Michael</div>
+                            <div class="match-last-msg">Want to grab coffee sometime?</div>
+                        </div>
+                    </li>
+                    <li class="match-item">
+                        <img src="https://images.unsplash.com/photo-1552058544-f2b08422138a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" class="match-img" alt="Match">
+                        <div class="match-info">
+                            <div class="match-name">Olivia</div>
+                            <div class="match-last-msg">I had a great time yesterday!</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="tab-content" id="chat">
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" class="match-img" alt="Match">
+                        <div class="match-name">Sophia</div>
+                    </div>
+                    
+                    <div class="chat-messages">
+                        <div class="message received">
+                            Hey there! How are you doing?
+                        </div>
+                        <div class="message sent">
+                            I'm good! Just got back from hiking. How about you?
+                        </div>
+                        <div class="message received">
+                            That sounds fun! I'm just finishing up some work.
+                        </div>
+                        <div class="message sent">
+                            Want to grab coffee sometime this week?
+                        </div>
+                    </div>
+                    
+                    <div class="chat-input">
+                        <input type="text" placeholder="Type a message...">
+                        <button class="send-btn"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="profile">
+                <div class="tab-title">My Profile</div>
+                <div class="settings-item">
+                    <div class="settings-name">Notifications</div>
+                    <label class="toggle">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="settings-item">
+                    <div class="settings-name">Location</div>
+                    <div class="settings-value">New York, NY</div>
+                </div>
+                <div class="settings-item">
+                    <div class="settings-name">Age Range</div>
+                    <div class="settings-value">24-32</div>
+                </div>
+                <div class="settings-item">
+                    <div class="settings-name">Show My Profile</div>
+                    <label class="toggle">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="settings-item">
+                    <div class="settings-name">Distance Preference</div>
+                    <div class="settings-value">30 miles</div>
+                </div>
+                <button class="auth-btn" style="margin-top: 20px;" onclick="logout()">Log Out</button>
+            </div>
+        </div>
+        
+        <div class="actions">
+            <button class="action-btn dislike" onclick="dislike()"><i class="fas fa-times"></i></button>
+            <button class="action-btn super-like" onclick="superLike()"><i class="fas fa-star"></i></button>
+            <button class="action-btn like" onclick="like()"><i class="fas fa-heart"></i></button>
+        </div>
+        
+        <div class="nav">
+            <div class="nav-item active" data-tab="discover">
+                <i class="fas fa-compass nav-icon"></i>
+                <span>Discover</span>
+            </div>
+            <div class="nav-item" data-tab="matches">
+                <i class="fas fa-heart nav-icon"></i>
+                <span>Matches</span>
+            </div>
+            <div class="nav-item" data-tab="chat">
+                <i class="fas fa-comments nav-icon"></i>
+                <span>Chat</span>
+            </div>
+            <div class="nav-item" data-tab="profile">
+                <i class="fas fa-user nav-icon"></i>
+                <span>Profile</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Backend simulation
+        const backend = {
+            users: [
+                {
+                    id: 1,
+                    email: "demo@connectify.com",
+                    password: "password123",
+                    name: "Demo User",
+                    age: 28,
+                    bio: "Love to travel and meet new people",
+                    profileImg: "https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&q=80"
+                }
+            ],
+            profiles: [
+                {
+                    id: 1,
+                    name: "Emma",
+                    age: 26,
+                    bio: "Art lover and travel enthusiast. Looking for someone to explore the world with me.",
+                    distance: "5 miles away",
+                    img: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
+                },
+                {
+                    id: 2,
+                    name: "James",
+                    age: 29,
+                    bio: "Software engineer who loves hiking and good coffee. Let's connect!",
+                    distance: "3 miles away",
+                    img: "https://images.unsplash.com/photo-1567532939604-b6b5b0db1604?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
+                },
+                {
+                    id: 3,
+                    name: "Sophia",
+                    age: 25,
+                    bio: "Photographer and dog lover. Looking for someone to share adventures with.",
+                    distance: "2 miles away",
+                    img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
+                }
+            ],
+            matches: [],
+            currentUser: null,
+            
+            login: function(email, password) {
+                logToConsole(`Login attempt: ${email}`);
+                const user = this.users.find(u => u.email === email && u.password === password);
+                if (user) {
+                    this.currentUser = user;
+                    logToConsole(`User logged in: ${user.name}`);
+                    return true;
+                }
+                logToConsole("Login failed: Invalid credentials");
+                return false;
+            },
+            
+            signup: function(name, email, password, age) {
+                logToConsole(`Signup attempt: ${email}`);
+                const newUser = {
+                    id: this.users.length + 1,
+                    email,
+                    password,
+                    name,
+                    age,
+                    bio: "New user bio",
+                    profileImg: "https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&q=80"
+                };
+                
+                this.users.push(newUser);
+                this.currentUser = newUser;
+                logToConsole(`New user created: ${name}`);
+                return true;
+            },
+            
+            logout: function() {
+                logToConsole(`User logged out: ${this.currentUser.name}`);
+                this.currentUser = null;
+            },
+            
+            likeProfile: function(profileId) {
+                const profile = this.profiles.find(p => p.id === profileId);
+                logToConsole(`Liked profile: ${profile.name}`);
+                
+                // Simulate match 30% of the time
+                if (Math.random() < 0.3) {
+                    this.matches.push(profile);
+                    logToConsole(`It's a match with ${profile.name}!`);
+                    return true;
+                }
+                return false;
+            },
+            
+            superLikeProfile: function(profileId) {
+                const profile = this.profiles.find(p => p.id === profileId);
+                logToConsole(`Super liked profile: ${profile.name}`);
+                
+                // Simulate match 60% of the time for super like
+                if (Math.random() < 0.6) {
+                    this.matches.push(profile);
+                    logToConsole(`It's a match with ${profile.name}!`);
+                    return true;
+                }
+                return false;
+            },
+            
+            dislikeProfile: function(profileId) {
+                const profile = this.profiles.find(p => p.id === profileId);
+                logToConsole(`Disliked profile: ${profile.name}`);
+                return false;
+            }
+        };
+
+        // DOM elements
+        const authContainer = document.getElementById('auth-container');
+        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
+        const navItems = document.querySelectorAll('.nav-item');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const currentProfile = document.getElementById('current-profile');
+        const nextProfile = document.getElementById('next-profile');
+        const consoleElement = document.getElementById('console');
+        
+        // Initialize the app
+        function initApp() {
+            // Check if user is logged in (for demo purposes, always show auth first)
+            authContainer.classList.remove('hidden');
+            
+            // Set up navigation
+            navItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const tabId = item.getAttribute('data-tab');
+                    
+                    // Update active nav item
+                    navItems.forEach(navItem => navItem.classList.remove('active'));
+                    item.classList.add('active');
+                    
+                    // Show active tab content
+                    tabContents.forEach(tab => tab.classList.remove('active'));
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+            
+            // Hide the next profile initially
+            nextProfile.style.display = 'none';
+            
+            logToConsole("Dating app initialized");
+        }
+        
+        // Authentication functions
+        function login() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (backend.login(email, password)) {
+                authContainer.classList.add('hidden');
+            } else {
+                alert("Invalid email or password");
+            }
+        }
+        
+        function signup() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const age = document.getElementById('age').value;
+            
+            if (name && email && password && age) {
+                backend.signup(name, email, password, parseInt(age));
+                authContainer.classList.add('hidden');
+            } else {
+                alert("Please fill all fields");
+            }
+        }
+        
+        function showSignup() {
+            loginForm.classList.add('hidden');
+            signupForm.classList.remove('hidden');
+        }
+        
+        function showLogin() {
+            signupForm.classList.add('hidden');
+            loginForm.classList.remove('hidden');
+        }
+        
+        function logout() {
+            backend.logout();
+            authContainer.classList.remove('hidden');
+        }
+        
+        // Profile actions
+        function like() {
+            const profileId = parseInt(currentProfile.dataset.id || 1);
+            const isMatch = backend.likeProfile(profileId);
+            
+            if (isMatch) {
+                alert(`You matched with ${backend.profiles[profileId-1].name}!`);
+            }
+            
+            swipeProfile('right');
+        }
+        
+        function superLike() {
+            const profileId = parseInt(currentProfile.dataset.id || 1);
+            const isMatch = backend.superLikeProfile(profileId);
+            
+            if (isMatch) {
+                alert(`You matched with ${backend.profiles[profileId-1].name}!`);
+            }
+            
+            swipeProfile('up');
+        }
+        
+        function dislike() {
+            const profileId = parseInt(currentProfile.dataset.id || 1);
+            backend.dislikeProfile(profileId);
+            swipeProfile('left');
+        }
+        
+        function swipeProfile(direction) {
+            currentProfile.style.transform = direction === 'right' ? 
+                'translateX(100%) rotate(10deg)' : 
+                direction === 'left' ?
+                'translateX(-100%) rotate(-10deg)' :
+                'translateY(-100%)';
+                
+            currentProfile.style.opacity = '0';
+            
+            setTimeout(() => {
+                currentProfile.style.display = 'none';
+                nextProfile.style.display = 'block';
+                
+                // Simulate loading next profile
+                setTimeout(() => {
+                    nextProfile.style.transition = 'none';
+                    nextProfile.style.transform = 'translateX(0)';
+                    nextProfile.style.opacity = '1';
+                    
+                    // Reset for demo purposes
+                    setTimeout(() => {
+                        currentProfile.style.transition = 'transform 0.3s, opacity 0.3s';
+                        currentProfile.style.display = 'block';
+                        currentProfile.style.transform = 'translateX(0)';
+                        currentProfile.style.opacity = '1';
+                        nextProfile.style.display = 'none';
+                    }, 1000);
+                }, 300);
+            }, 300);
+        }
+        
+        // Backend console functions
+        function logToConsole(message) {
+            const logEntry = document.createElement('div');
+            logEntry.textContent = `> ${new Date().toLocaleTimeString()}: ${message}`;
+            consoleElement.appendChild(logEntry);
+            consoleElement.scrollTop = consoleElement.scrollHeight;
+        }
+        
+        function toggleConsole() {
+            consoleElement.style.display = consoleElement.style.display === 'block' ? 'none' : 'block';
+        }
+        
+        // Initialize the app when the page loads
+        window.onload = initApp;
+    </script>
+</body>
+</html>
